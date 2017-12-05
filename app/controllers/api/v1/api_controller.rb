@@ -3,7 +3,7 @@ module Api
     class ApiController < ActionController::API
       include Concerns::Authenticator
       include Concerns::ErrorHandler
-
+      include Concerns::Internationalizator
 
     end
   end
