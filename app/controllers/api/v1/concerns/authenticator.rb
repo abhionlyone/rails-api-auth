@@ -5,13 +5,12 @@ module Api
         extend ActiveSupport::Concern
 
         included do
-          before_action :auth_with_token!
+          before_action :auth_with_token!, :correct_secret_api_key?
         end
 
-        # Devise methods overwrites
         def current_user
           @current_user ||=
-            User.find_by(auth_token: request.headers['Authorization'])
+            User.find_by(auth_token: request.headers['X-Auth-Token'])
         end
 
         def user_signed_in?
@@ -21,6 +20,11 @@ module Api
         def auth_with_token!
           head :unauthorized unless user_signed_in?
         end
+
+        def correct_secret_api_key?
+          head :unauthorized unless request.headers['Authorization'] == ENV['SECRET_API_KEY']
+        end
+        
       end
     end
   end
